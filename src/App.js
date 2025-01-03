@@ -4,7 +4,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import WritePage from './components/WritePage';
 import Dashboard from './components/Dashboard';
-import './App.css';
+import BlogPage from './components/BlogPage';
+import NavBar from './components/NavBar';
 
 function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +31,7 @@ function Layout({ children }) {
 function App() {
   return (
     <BrowserRouter>
+    <NavBar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -38,6 +40,14 @@ function App() {
           element={
             <Layout>
               <WritePage />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/blogpage" 
+          element={
+            <Layout>
+              <BlogPage />
             </Layout>
           } 
         />

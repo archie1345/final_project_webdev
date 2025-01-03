@@ -1,0 +1,41 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0; /* Light gray background */
+    border-bottom: 1px solid #ccc; /* Light gray border */
+  }
+  
+  .menu-icon {
+    margin-right: 10px;
+    /* Add your menu icon styles here */
+  }
+  
+  .search-bar {
+    flex-grow: 1; /* Make the search bar take up most of the space */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-bar input {
+    border: none;
+    outline: none;
+    flex-grow: 1; /* Make the input field take up most of the space */
+  }
+  
+  .search-icon {
+    margin-left: 5px;
+    /* Add your search icon styles here */
+  }
+  
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-buttons .icon {
+    margin-left: 10px;
+  }

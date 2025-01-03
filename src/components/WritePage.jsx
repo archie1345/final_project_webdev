@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, User, Camera, AlignJustify, Bold, Italic, Underline } from 'lucide-react';
+import { Camera, AlignJustify, Bold, Italic, Underline } from 'lucide-react';
 import './WritePage.css';
+import NavBar from './NavBar';
 
 const WritePage = ({ isMenuOpen, setIsMenuOpen }) => {
   const [isDraft, setIsDraft] = useState(false);
@@ -47,85 +48,74 @@ const WritePage = ({ isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <div className="write-page">
-      <nav className="navbar">
-        <div className="search-container">
-          <input type="search" placeholder="Search..." className="search-input" />
-        </div>
-        <div className="nav-buttons">
-          <Plus size={24} className="icon" />
-          <User size={24} className="icon" />
-        </div>
-      </nav>
-
-      <div className="content">
-        <div className={`editor ${isMenuOpen ? 'shift-right' : ''}`}>
-          <input
-            type="text"
-            placeholder="Add your title"
-            className="title-input"
-          />
-          <div className="toolbar">
-            <button className="toolbar-btn" onClick={handleImageUpload}>
-              <Camera size={18} className="icon" />
-              Add Image
+      <NavBar /> {/* Render NavBar at the top */}
+      <div className={`editor ${isMenuOpen ? 'shift-right' : ''}`}>
+        <input
+          type="text"
+          placeholder="Add your title"
+          className="title-input"
+        />
+        <div className="toolbar">
+          <button className="toolbar-btn" onClick={handleImageUpload}>
+            <Camera size={18} className="icon" />
+            Add Image
+          </button>
+          <div className="format-buttons">
+            <button
+              className="format-btn"
+              onClick={() => applyFormatting('strong')}
+              title="Bold"
+            >
+              <Bold size={18} />
             </button>
-            <div className="format-buttons">
-              <button 
-                className="format-btn"
-                onClick={() => applyFormatting('strong')}
-                title="Bold"
-              >
-                <Bold size={18} />
-              </button>
-              <button 
-                className="format-btn"
-                onClick={() => applyFormatting('em')}
-                title="Italic"
-              >
-                <Italic size={18} />
-              </button>
-              <button 
-                className="format-btn"
-                onClick={() => applyFormatting('u')}
-                title="Underline"
-              >
-                <Underline size={18} />
-              </button>
-              <button 
-                className="format-btn"
-                onClick={() => {
-                  if (editorRef) {
-                    editorRef.style.textAlign = 
-                      editorRef.style.textAlign === 'justify' ? 'left' : 'justify';
-                  }
-                }}
-                title="Justify"
-              >
-                <AlignJustify size={18} />
-              </button>
-            </div>
+            <button
+              className="format-btn"
+              onClick={() => applyFormatting('em')}
+              title="Italic"
+            >
+              <Italic size={18} />
+            </button>
+            <button
+              className="format-btn"
+              onClick={() => applyFormatting('u')}
+              title="Underline"
+            >
+              <Underline size={18} />
+            </button>
+            <button
+              className="format-btn"
+              onClick={() => {
+                if (editorRef) {
+                  editorRef.style.textAlign =
+                    editorRef.style.textAlign === 'justify' ? 'left' : 'justify';
+                }
+              }}
+              title="Justify"
+            >
+              <AlignJustify size={18} />
+            </button>
           </div>
-          <div
-            ref={ref => setEditorRef(ref)}
-            className="content-editor"
-            contentEditable
-            onSelect={handleTextSelection}
-            onInput={(e) => setContent(e.target.innerHTML)}
-            dangerouslySetInnerHTML={{ __html: content }}
+        </div>
+        <div
+          ref={(ref) => setEditorRef(ref)}
+          className="content-editor"
+          contentEditable
+          onSelect={handleTextSelection}
+          onInput={(e) => setContent(e.target.innerHTML)}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+        <div className="draft-checkbox">
+          <input
+            type="checkbox"
+            id="draft"
+            checked={isDraft}
+            onChange={(e) => setIsDraft(e.target.checked)}
           />
-          <div className="draft-checkbox">
-            <input
-              type="checkbox"
-              id="draft"
-              checked={isDraft}
-              onChange={(e) => setIsDraft(e.target.checked)}
-            />
-            <label htmlFor="draft">Draft</label>
-          </div>
-          <div className="action-buttons">
-            <button className="publish-btn">Publish</button>
-            <button className="cancel-btn">Cancel</button>
-          </div>
+          <label htmlFor="draft">Draft</label>
+        </div>
+        <div className="action-buttons">
+          <button className="publish-btn">Publish</button>
+          <button className="cancel-btn">Cancel</button>
         </div>
       </div>
     </div>
