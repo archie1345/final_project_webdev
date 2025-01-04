@@ -44,10 +44,12 @@ const Login = () => {
 
   return (
     <div className="container">
-      <div className="login-card">
+    <div className="sec-container">
         <h1>Log in</h1>
+      <div className="login-card">
         <form onSubmit={handleSubmit}>
           <div className="input-container">
+            <InputLabel htmlFor="email">Email</InputLabel>
             <Input
               name="email"
               placeholder="Email"
@@ -59,6 +61,7 @@ const Login = () => {
             />
           </div>
           <div className="input-container">
+            <InputLabel htmlFor="password">Password</InputLabel>
             <Input
               name="password"
               placeholder="Password"
@@ -83,10 +86,11 @@ const Login = () => {
         </form>
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
+      </div>
         <p>
           Don't have an account? <a href="/register">Sign up now</a>
         </p>
-      </div>
+    </div>
     </div>
   );
 };
