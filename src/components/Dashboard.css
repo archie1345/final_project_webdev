@@ -17,6 +17,19 @@
     transform: translateX(0);
 }
 
+.dashboard-item {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.dashboard-item:hover {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
 /* Add to App.css or your global styles */
 .layout {
     min-height: 100vh;
@@ -50,6 +63,10 @@
 }
 
 .main-content {
-    padding-top: 60px; /* Same as header height */
-    min-height: 100vh;
+    margin-left: 0;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.shift-right {
+    margin-left: 250px; /* Matches the dashboard width */
 }
