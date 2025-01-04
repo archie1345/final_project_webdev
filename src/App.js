@@ -3,27 +3,19 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import WritePage from "./components/WritePage";
-import Dashboard from "./components/Dashboard";
 import BlogPage from "./components/BlogPage";
-import NavBar from "./components/NavBar";
 import HomePage from "./components/HomePage";
 import BlogSnippet from "./components/BlogSnippet";
 import UserPage from "./components/UserPage";
+import NavBar from "./components/NavBar";
 
 function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="layout">
-      <header className="header">
-        <button
-          className="menu-button"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          ☰
-        </button>
-      </header>
-      <Dashboard isOpen={isMenuOpen} />
+      
+        <NavBar />
       <main className="main-content">
         {React.cloneElement(children, { isMenuOpen, setIsMenuOpen })}
       </main>
@@ -34,7 +26,6 @@ function Layout({ children }) {
 function App() {
   return (
     <BrowserRouter>
-      <NavBar />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
