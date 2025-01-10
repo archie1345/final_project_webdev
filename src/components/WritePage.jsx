@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import { Camera, AlignJustify, Bold, Italic, Underline } from 'lucide-react';
 import './WritePage.css';
-import NavBar from './NavBar';
 
-const WritePage = ({ isMenuOpen, setIsMenuOpen }) => {
+const WritePage = ({ isMenuOpen }) => {
   const [isDraft, setIsDraft] = useState(false);
   const [content, setContent] = useState('');
-  const [selectedText, setSelectedText] = useState('');
   const [editorRef, setEditorRef] = useState(null);
-
-  const handleTextSelection = () => {
-    const selection = window.getSelection();
-    const text = selection.toString();
-    setSelectedText(text);
-  };
 
   const applyFormatting = (format) => {
     const selection = window.getSelection();
@@ -48,7 +40,6 @@ const WritePage = ({ isMenuOpen, setIsMenuOpen }) => {
 
   return (
     <div className="write-page">
-      <NavBar /> {/* Render NavBar at the top */}
       <div className={`editor ${isMenuOpen ? 'shift-right' : ''}`}>
         <input
           type="text"
@@ -100,7 +91,6 @@ const WritePage = ({ isMenuOpen, setIsMenuOpen }) => {
           ref={(ref) => setEditorRef(ref)}
           className="content-editor"
           contentEditable
-          onSelect={handleTextSelection}
           onInput={(e) => setContent(e.target.innerHTML)}
           dangerouslySetInnerHTML={{ __html: content }}
         />

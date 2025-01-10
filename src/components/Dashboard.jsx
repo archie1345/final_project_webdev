@@ -6,14 +6,12 @@ const Dashboard = ({ isOpen }) => {
     <div className={`dashboard ${isOpen ? 'open' : ''}`}>
       <h2>Dashboard</h2>
       <div className="dashboard-item">
-        <span className="icon">📝</span>
-        Posts
+        <span className="icon">📝</span> Posts
       </div>
       <div className="dashboard-item">
-        <span className="icon">📊</span>
-        Analytics
+        <span className="icon">📊</span> Analytics
       </div>
-      {/* Add more dashboard items as needed */}
+      {/* Add more items as needed */}
     </div>
   );
 };

@@ -1,25 +1,13 @@
 .write-page {
-    height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
-    background-color: #f0f0f0;
-  }
+  padding-top: 4rem;
+  height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #A2A2A2 0%, white 100%);
+}
   
-  .navbar {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-    position: relative;
-    z-index: 1;
-  }
     
-  .nav-buttons {
-    display: flex;
-    gap: 1rem;
-  }
-  
+
   .icon {
     cursor: pointer;
   }
@@ -33,30 +21,42 @@
   
   .editor {
     width: 100%;
-    max-width: 1200px;
+    max-width: 100vh;
     margin: 0 auto;
     padding: 2rem;
-    transition: all 0.3s ease;
+    transition: margin-left 0.3s ease, width 0.3s ease;
     background: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
+
+.editor.shift-right {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
   
-  .editor.shift-right {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-    max-width: calc(100% - 250px);
-  }
-  
-  .title-input {
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+  .editor {
+    margin-left: 0;
     width: 100%;
-    padding: 0.5rem;
-    font-size: 1.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-    background: transparent;
   }
+
+  .editor.shift-right {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.title-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  background: transparent;
+}
   
   .toolbar {
     display: flex;
@@ -109,12 +109,12 @@
   .content-editor {
     width: 100%;
     min-height: 400px;
-    padding: 1rem;
+    padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     resize: vertical;
     margin-bottom: 1rem;
-    background: transparent;
+    background: white;
   }
   
   .draft-checkbox {

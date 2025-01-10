@@ -17,7 +17,7 @@ function NavBar({ children }) {
         >
           ☰
         </button>
-        <span className="logo">My App</span>
+        {/* <span className="logo">My App</span> */}
       </div>
 
       {/* Dashboard Sidebar */}
