@@ -8,7 +8,6 @@ import "./UserPage.css";
 export default function UserPage() {
   return (
     <div className="user-page">
-      <NavBar />
       <UserProfile />
       <ContentSection />
     </div>
