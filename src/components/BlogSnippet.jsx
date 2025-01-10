@@ -7,8 +7,8 @@ function BlogSnippet() {
           <div className="blog-card">
             <div className="blog-image">
               <img
-                src="https://via.placeholder.com/300x150.png?text=Chart"
-                alt="Chart"
+                 src="https://picsum.photos/300/200" // Ganti URL ini dengan link gambar nyata
+            alt="Blog Thumbnail"
               />
             </div>
             <div className="blog-details">
