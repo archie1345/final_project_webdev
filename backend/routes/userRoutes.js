@@ -69,8 +69,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get user profile data
-router.get("/profile", auth, async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const userId = req.params.id;
+  console.log("User ID:", userId); // Check if the userId is being passed correctly
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
   try {
     const user = await User.findById(req.user.id).select("-password"); // Exclude password
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -79,4 +85,5 @@ router.get("/profile", auth, async (req, res) => {
     console.error("Error fetching profile:", err);
     res.status(500).json({ error: "Internal server error" });  }
 });
+
 module.exports = router;
