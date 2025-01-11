@@ -19,13 +19,7 @@ const Dashboard = ({ isOpen }) => {
       </div>
       <div className="dashboard-item">
         <span className="icon">📊</span>Analytics
-      </div>
-      <div className="dashboard-item">
-        <span className="icon">?</span> Category
-      </div>
-      <div className="dashboard-item">
-        <span className="icon">!</span> Logout
-      </div>     
+      </div>   
       {/* Add more items as needed */}
     </div>
   );

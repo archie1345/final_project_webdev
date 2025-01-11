@@ -55,9 +55,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get user profile data
-router.get('/profile', async (req, res) => {
-  res.json(user); // Send user data as a response
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id); // Fetch user by ID
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
