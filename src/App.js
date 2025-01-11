@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage";
 import BlogSnippet from "./components/BlogSnippet";
 import UserPage from "./components/UserPage";
 import NavBar from "./components/NavBar";
+import UserProfile from "./components/pageBuilder/UserProfile";
 
 function Layout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,6 +62,7 @@ function App() {
           }
         />
         <Route path="/blog/:postId" element={<BlogPage />} />
+        <Route path="/users/:userId" component={<UserProfile/>} />
         <Route>
           <Route path="/blogpage" element={<BlogPage />} />
         </Route>

@@ -2,25 +2,14 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const auth = require("./middleware/auth");
+const mongoose = require('mongoose');
+
 const router = express.Router();
 
 // Register route
 router.post("/register", async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    const { username, email, password } = req.body;
-
-    // Validate input
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: "Invalid email format" });
-    }
+    const { name, email, password } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -33,7 +22,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -41,7 +30,6 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Login route
 router.post("/login", async (req, res) => {
@@ -62,28 +50,27 @@ router.post("/login", async (req, res) => {
 
     // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "Strict" });
-    res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 router.get("/:id", async (req, res) => {
-  const userId = req.params.id;
-  console.log("User ID:", userId); // Check if the userId is being passed correctly
-
-  if (!userId) {
-    return res.status(400).json({ error: "User ID is required" });
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid ID format" });
   }
 
   try {
-    const user = await User.findById(req.user.id).select("-password"); // Exclude password
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json(user);
   } catch (err) {
-    console.error("Error fetching profile:", err);
-    res.status(500).json({ error: "Internal server error" });  }
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

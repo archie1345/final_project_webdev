@@ -16,7 +16,7 @@ function BlogPage() {
       setLoading(false);
       return;
     }
-
+    console.log(postId)
     axios
       .get(`http://localhost:5000/api/posts/${postId}`) // Adjust the URL to match your backend endpoint
       .then((response) => {
