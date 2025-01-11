@@ -73,9 +73,10 @@ router.post("/login", async (req, res) => {
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password"); // Exclude password
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ error: "Internal server error" });  }
 });
 module.exports = router;
