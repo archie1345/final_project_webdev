@@ -70,8 +70,15 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
+  const userId = req.params.id;
+  console.log("User ID:", userId); // Check if the userId is being passed correctly
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
   try {
-    const user = await User.findById(req.params.id); // Fetch user by ID
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
