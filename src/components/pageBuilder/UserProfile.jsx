@@ -1,36 +1,43 @@
-// components/UserProfile.js
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import "./UserProfile.css";
 
 export default function UserProfile() {
-  const [users, setUser] = useState(null); // State to store user data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-
-  useEffect(() => {
-    // Assuming you have an API endpoint to fetch the user's profile data
-    axios
-      .get("http://localhost:5000/api/users/profile") // Replace with your API endpoint
-      .then((response) => {
-        setUser(response.data); // Store the fetched data
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching user data:", err);
-        setError("Failed to load user profile");
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  // Static dummy user data
+  const user = {
+    name: "Username",
+    bannerImage: "https://picsum.photos/1200/200?random=4", // Random banner image
+    profileImage: "https://picsum.photos/100/100?random=5"  // Random profile image
+  };
 
   return (
     <div className="user-profile">
-      <div className="profile-info">
-        <h2>{users.name}</h2>
-        <p>{users.bio || "No bio available."}</p>
+      {/* Banner Section */}
+      <div className="banner">
+        <img src={user.bannerImage} alt="User banner" />
+      </div>
+      
+      {/* Profile Details Section */}
+      <div className="profile-details">
+        <div className="profile-picture">
+          <img src={user.profileImage} alt="User profile" />
+        </div>
+        <div className="profile-info">
+          <h2>{user.name}</h2>
+          <p>{user.bio}</p>
+        </div>
+      </div>
+      
+      {/* Additional Content Section */}
+      <div className="additional-content">
+        <div className="content-box">
+          <img src="https://picsum.photos/300/200?random=1" alt="Content 1" />
+        </div>
+        <div className="content-box">
+          <img src="https://picsum.photos/300/200?random=2" alt="Content 2" />
+        </div>
+        <div className="content-box">
+          <img src="https://picsum.photos/300/200?random=3" alt="Content 3" />
+        </div>
       </div>
     </div>
   );
