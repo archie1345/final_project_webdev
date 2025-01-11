@@ -11,6 +11,8 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
 
 // MongoDB Connection
 mongoose
