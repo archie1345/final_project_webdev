@@ -2,13 +2,25 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-
+const auth = require("./middleware/auth");
 const router = express.Router();
 
 // Register route
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    console.log("Request Body:", req.body);
+    const { username, email, password } = req.body;
+
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -21,7 +33,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({ username, email, password: hashedPassword });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -29,6 +41,7 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Login route
 router.post("/login", async (req, res) => {
@@ -49,7 +62,8 @@ router.post("/login", async (req, res) => {
 
     // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "Strict" });
+    res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
