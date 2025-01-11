@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Dashboard from "./Dashboard";
 import { Plus, User, LogOut, Settings } from "lucide-react"; // Add any other icons you need
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 
 function NavBar({ children }) {
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleLogout = () => {
     // Clear the token from localStorage (or sessionStorage)
     localStorage.removeItem("token");
@@ -17,11 +17,16 @@ function NavBar({ children }) {
     <nav className="navbar">
       {/* Left Section (Menu Button and Logo) */}
       <div className="navbar-left">
-        <button className="menu-button">☰</button>
+      <button
+          className="menu-button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          ☰
+        </button>
       </div>
 
       {/* Dashboard Sidebar */}
-      <Dashboard />
+      <Dashboard isOpen={isMenuOpen} />
 
       {/* Search Bar */}
       <div className="search-bar">
@@ -37,7 +42,9 @@ function NavBar({ children }) {
 
         {/* Profile Dropdown */}
         <div className="profile-dropdown">
-          <User size={24} className="icon profile-icon" />
+          <NavLink to="/profile" className="nav-link">
+            <User size={24} className="icon profile-icon" />
+          </NavLink>
           <div className="profile-menu">
             <div className="profile-header">
               <User size={40} className="profile-picture" />
