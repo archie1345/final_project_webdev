@@ -42,7 +42,9 @@ function NavBar({ children }) {
 
         {/* Profile Dropdown */}
         <div className="profile-dropdown">
-          <User size={24} className="icon profile-icon" />
+          <NavLink to="/profile" className="nav-link">
+            <User size={24} className="icon profile-icon" />
+          </NavLink>
           <div className="profile-menu">
             <div className="profile-header">
               <User size={40} className="profile-picture" />
