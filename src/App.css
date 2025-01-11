@@ -92,6 +92,8 @@
   grid-area: main;
   padding: 20px;
   overflow-y: auto;
+  margin-top: 16px;
+  align-items: center;
 }
 
 .main-content .content {

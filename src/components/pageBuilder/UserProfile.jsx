@@ -4,37 +4,43 @@ import { useParams } from "react-router-dom";
 import "./UserProfile.css";
 
 export default function UserProfile() {
-  const { userId } = useParams();
-  const [user, setUser] = useState(null); // State to store the single post data
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { userId } = useParams(); // Retrieve userId from URL
+  const [user, setUser] = useState(null); // Store user data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
-    console.log(userId); // This will laog the ID to ensure it's being fetched correctly
+    if (!userId) {
+      setError("User ID is missing in the URL.");
+      setLoading(false);
+      return;
+    }
+
+    // Fetch user data
     axios
-      .get(`http://localhost:5000/api/users/67784c8fbd110de3969945a3`)
+      .get(`http://localhost:5000/api/users/${userId}`)
       .then((response) => {
-        setUser(response.data);
-        setLoading(false);
+        setUser(response.data); // Save user data
+        setLoading(false); // Stop loading
       })
       .catch((err) => {
         console.error("Error fetching user:", err);
         setError("Failed to load user data");
-        setLoading(false);
+        setLoading(false); // Stop loading
       });
   }, [userId]);
 
   const updateField = (field, value) => {
-    setLoading(true); // Set loading before making the request
+    setLoading(true); // Start loading
     axios
-      .put(`http://localhost:5000/api/users/${user._id}`, { [field]: value })
+      .put(`http://localhost:5000/api/users/${userId}`, { [field]: value })
       .then((response) => {
-        setUser((prev) => ({ ...prev, [field]: response.data[field] }));
-        setLoading(false); // Stop loading after the update
+        setUser((prev) => ({ ...prev, [field]: response.data[field] })); // Update state
+        setLoading(false); // Stop loading
       })
       .catch((err) => {
         console.error(`Failed to update ${field}:`, err);
-        setLoading(false); // Stop loading in case of error
+        setLoading(false); // Stop loading
       });
   };
 
@@ -66,7 +72,7 @@ export default function UserProfile() {
     <div className="user-profile">
       {/* Banner Section */}
       <div className="banner">
-        <img src={user.bannerImage} alt="User banner" />
+        <img src={user.bannerImage || "https://picsum.photos/1200/300"} alt="User banner" />
         <button className="edit-button" onClick={updateBannerImage}>
           Edit Banner
         </button>
@@ -75,14 +81,14 @@ export default function UserProfile() {
       {/* Profile Details Section */}
       <div className="profile-details">
         <div className="profile-picture">
-          <img src={user.profileImage} alt="User profile" />
-          <button className="edit-button" onClick={updateProfileImage}>
-            Edit Profile Picture
+          <img src={user.profileImage || "https://picsum.photos/100"} alt="User profile" />
+          <button onClick={updateProfileImage}>
+            Change Picture
           </button>
         </div>
         <div className="profile-info">
           <h2>{user.username}</h2>
-          <p>{user.bio}</p>
+          <p>{user.bio || "No bio available"}</p>
           <button className="edit-button" onClick={updateBio}>
             Edit Bio
           </button>

@@ -1,6 +1,6 @@
 // pages/UserPage.js
 import React from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "./NavBar";
 import UserProfile from "../components/pageBuilder/UserProfile";
 import ContentSection from "../components/pageBuilder/ContentSection";
 import "./UserPage.css";

@@ -3,6 +3,7 @@ import Dashboard from "./Dashboard";
 import { Plus, User, LogOut, Settings } from "lucide-react"; // Add any other icons you need
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
+import { jwtDecode } from "jwt-decode";
 
 function NavBar({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +13,12 @@ function NavBar({ children }) {
     // Redirect to login page
     window.location.href = "/login";
   };
+  const token = localStorage.getItem("token");
+  let userId = null;
+  if (token) {
+      const decoded = jwtDecode(token);
+      userId = decoded.id; // Extract the user ID from the token
+  }
 
   return (
     <nav className="navbar">
@@ -42,16 +49,16 @@ function NavBar({ children }) {
 
         {/* Profile Dropdown */}
         <div className="profile-dropdown">
-          <NavLink to="/profile" className="nav-link">
+          <NavLink to={`/users/${userId}`} className="nav-link">
             <User size={24} className="icon profile-icon" />
           </NavLink>
           <div className="profile-menu">
             <div className="profile-header">
-              <User size={40} className="profile-picture" />
+              <User size={40} className="profile" />
               <div>
                 <h3>Username</h3>
-                <NavLink to="/profile" className="visit-profile">
-                  Visit profile
+                <NavLink to={`/users/${userId}`} className="menu-item">
+                  <span>Visit Profile</span>
                 </NavLink>
               </div>
             </div>

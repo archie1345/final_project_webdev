@@ -10,6 +10,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  margin-bottom: 20px;
 }
 
 .navbar-left {
@@ -139,6 +140,11 @@
 .profile-header h3 {
   margin: 0;
   font-size: 16px;
+}
+
+.profile{
+  height: 80px;
+  width: 80px;
 }
 
 .visit-profile {

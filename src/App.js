@@ -54,7 +54,7 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path="/users/:userId"
           element={
             <Layout>
               <UserPage />
@@ -62,7 +62,7 @@ function App() {
           }
         />
         <Route path="/blog/:postId" element={<BlogPage />} />
-        <Route path="/users/:userId" component={<UserProfile/>} />
+        <Route path="/users/:userId" element={<UserProfile />} />
         <Route>
           <Route path="/blogpage" element={<BlogPage />} />
         </Route>
