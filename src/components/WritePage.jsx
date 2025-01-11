@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Camera, AlignJustify, Bold, Italic, Underline } from 'lucide-react';
 import './WritePage.css';
 
-const WritePage = ({ isMenuOpen }) => {
+const WritePage = ({ isMenuOpen, currentUser }) => {
   const [isDraft, setIsDraft] = useState(false);
   const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [image, setImage] = useState(null);
   const [editorRef, setEditorRef] = useState(null);
+  const [authorName, setAuthorName] = useState(currentUser ? currentUser.name : ''); // State for author name
+
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "your_preset_name");
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/posts", formData);
+      return response.data.secure_url;
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      return null;
+    }
+  };
 
   const applyFormatting = (format) => {
     const selection = window.getSelection();
@@ -21,21 +39,32 @@ const WritePage = ({ isMenuOpen }) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = e.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          img.style.maxWidth = '100%';
-          editorRef.appendChild(img);
-          setContent(editorRef.innerHTML);
-        };
-        reader.readAsDataURL(file);
+        const imageUrl = await uploadImage(file);
+        if (imageUrl) {
+          setImage(imageUrl);  // Store the image URL
+        }
       }
     };
     input.click();
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/posts', {
+        title,
+        content,
+        author: authorName,  // Use the entered or pre-filled author name
+        imageUrl: image || "", // Use image URL or leave it blank
+        isDraft,
+      });
+      console.log('Post created successfully:', response.data);
+      // Optionally, you can redirect the user or show a success message here
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
   };
 
   return (
@@ -45,7 +74,19 @@ const WritePage = ({ isMenuOpen }) => {
           type="text"
           placeholder="Add your title"
           className="title-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
+        
+        {/* Author Name Input */}
+        <input
+          type="text"
+          placeholder="Author Name"
+          className="author-input"
+          value={authorName}
+          onChange={(e) => setAuthorName(e.target.value)} // Allow the user to change the author name
+        />
+
         <div className="toolbar">
           <button className="toolbar-btn" onClick={handleImageUpload}>
             <Camera size={18} className="icon" />
@@ -87,6 +128,7 @@ const WritePage = ({ isMenuOpen }) => {
             </button>
           </div>
         </div>
+
         <div
           ref={(ref) => setEditorRef(ref)}
           className="content-editor"
@@ -104,7 +146,7 @@ const WritePage = ({ isMenuOpen }) => {
           <label htmlFor="draft">Draft</label>
         </div>
         <div className="action-buttons">
-          <button className="publish-btn">Publish</button>
+          <button className="publish-btn" onClick={handleSubmit}>Publish</button>
           <button className="cancel-btn">Cancel</button>
         </div>
       </div>

@@ -55,4 +55,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Get user profile data
+router.get('/profile', async (req, res) => {
+  res.json(user); // Send user data as a response
+});
+
 module.exports = router;
