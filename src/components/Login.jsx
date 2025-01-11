@@ -42,6 +42,22 @@ const Login = () => {
     }
   };
 
+  const handleLogin = async (email, password) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/login", {
+        email,
+        password,
+      });
+  
+      // Store the token in localStorage (or sessionStorage for temporary storage)
+      localStorage.setItem("token", res.data.token);
+  
+      console.log("Login successful!");
+    } catch (err) {
+      console.error("Login error:", err.response?.data?.message || err.message);
+    }
+  };
+
   return (
     <div className="container">
     <div className="sec-container">
