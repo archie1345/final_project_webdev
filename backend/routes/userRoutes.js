@@ -69,22 +69,21 @@ router.post("/login", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
+  const { id } = req.params; // Extract userId from the URL
+  const updateData = req.body; // Get fields to update from the request body
+
+  if (!id) {
+    return res.status(400).json({ message: "User ID is missing" });
+  }
+
   try {
-    const { id } = req.params; // User ID from the URL
-    const updateData = req.body;
-
-    // Validate the provided ID
-    if (!id) {
-      return res.status(400).json({ message: "User ID is missing" });
-    }
-
-    // Find and update the user
+    // Find user by userId and update the fields
     const updatedUser = await User.findOneAndUpdate(
-      { userId: id }, // Use `userId` for matching
+      { _id: id }, // Match _Id
       updateData,
       {
-        new: true, // Return the updated document
-        runValidators: true, // Apply schema validation
+        new: true, // Return updated document
+        runValidators: true, // Enforce schema validation
       }
     );
 
@@ -92,13 +91,12 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(updatedUser); // Send the updated user data
+    res.status(200).json(updatedUser); // Return updated user data
   } catch (err) {
     console.error("Error updating user:", err);
-    res.status(500).json({ error: "An error occurred while updating the user" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 
 router.get("/:id", async (req, res) => {
