@@ -67,6 +67,40 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // User ID from the URL
+    const updateData = req.body;
+
+    // Validate the provided ID
+    if (!id) {
+      return res.status(400).json({ message: "User ID is missing" });
+    }
+
+    // Find and update the user
+    const updatedUser = await User.findOneAndUpdate(
+      { userId: id }, // Use `userId` for matching
+      updateData,
+      {
+        new: true, // Return the updated document
+        runValidators: true, // Apply schema validation
+      }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser); // Send the updated user data
+  } catch (err) {
+    console.error("Error updating user:", err);
+    res.status(500).json({ error: "An error occurred while updating the user" });
+  }
+});
+
+
+module.exports = router;
+
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
@@ -75,7 +109,9 @@ router.get("/:id", async (req, res) => {
   }
 
   try {
-    const user = await User.findById(id);
+    const updates = req.body;
+    const user = await User.findByIdAndUpdate(id, updates, { new: true });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

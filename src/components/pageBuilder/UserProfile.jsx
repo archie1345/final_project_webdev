@@ -31,39 +31,47 @@ export default function UserProfile() {
   }, [userId]);
 
   const updateField = (field, value) => {
-    setLoading(true); // Start loading
+    console.log("Updating field:", field, "with value:", value); // Debug log
+    console.log("Using userId:", userId); // Ensure the correct `userId` is being used
+  
+    setLoading(true);
+    setError("");
     axios
       .put(`http://localhost:5000/api/users/${userId}`, { [field]: value })
       .then((response) => {
-        setUser((prev) => ({ ...prev, [field]: response.data[field] })); // Update state
-        setLoading(false); // Stop loading
+        console.log("Updated user:", response.data); // Debug log for response
+        setUser(response.data); // Update the state with the correct user data
+        setLoading(false);
       })
       .catch((err) => {
-        console.error(`Failed to update ${field}:`, err);
-        setLoading(false); // Stop loading
+        console.error("Error updating field:", err);
+        setError(`Failed to update ${field}.`);
+        setLoading(false);
       });
   };
+  
 
   const updateProfileImage = () => {
-    const newProfileImage = prompt("Enter the new profile image URL:");
-    if (newProfileImage) {
-      updateField("profileImage", newProfileImage);
-    }
-  };
+  const newProfileImage = prompt("Enter the new profile image URL:");
+  if (newProfileImage && newProfileImage.trim()) {
+    updateField("profileImage", newProfileImage.trim());
+  }
+};
 
-  const updateBannerImage = () => {
-    const newBannerImage = prompt("Enter the new banner image URL:");
-    if (newBannerImage) {
-      updateField("bannerImage", newBannerImage);
-    }
-  };
+const updateBannerImage = () => {
+  const newBannerImage = prompt("Enter the new banner image URL:");
+  if (newBannerImage && newBannerImage.trim()) {
+    updateField("bannerImage", newBannerImage.trim());
+  }
+};
 
-  const updateBio = () => {
-    const newBio = prompt("Enter your new bio:");
-    if (newBio) {
-      updateField("bio", newBio);
-    }
-  };
+const updateBio = () => {
+  const newBio = prompt("Enter your new bio:");
+  if (newBio && newBio.trim()) {
+    updateField("bio", newBio.trim());
+  }
+};
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

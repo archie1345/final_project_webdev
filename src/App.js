@@ -15,7 +15,7 @@ function Layout({ children }) {
 
   return (
     <div className="layout">
-        <NavBar />
+      <NavBar />
       <main className="main-content">
         {React.cloneElement(children, { isMenuOpen, setIsMenuOpen })}
       </main>
@@ -57,18 +57,12 @@ function App() {
           path="/users/:userId"
           element={
             <Layout>
-              <UserPage />
+              <UserProfile />
             </Layout>
           }
         />
         <Route path="/blog/:postId" element={<BlogPage />} />
-        <Route path="/users/:userId" element={<UserProfile />} />
-        <Route>
-          <Route path="/blogpage" element={<BlogPage />} />
-        </Route>
-        <Route>
-          <Route path="/blogsnip" element={<BlogSnippet />} />
-        </Route>
+        <Route path="/blogsnip" element={<BlogSnippet />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
