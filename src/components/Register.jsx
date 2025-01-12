@@ -52,31 +52,31 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if password meets constraints
+  
     if (!isPasswordValid(formData.password)) {
       setError(
         "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character."
       );
       return;
     }
-
+  
     try {
-      const res = await axios.post("http://localhost:5000/api/users/register", {
+      await axios.post("http://localhost:5000/api/users/register", {
         username: formData.username,
         email: formData.email,
         password: formData.password,
       });
-      
+  
       setSuccess("Registered successfully!");
       setError("");
       navigate("/login");
     } catch (err) {
-      console.error("Axios Error:", err);
+      console.error("Registration error:", err);
       setError(err.response?.data?.message || "An error occurred");
       setSuccess("");
-    }    
+    }
   };
+  
 
   return (
     <div className="container">
