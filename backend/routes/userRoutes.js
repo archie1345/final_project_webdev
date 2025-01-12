@@ -67,6 +67,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params; // User ID from the URL
@@ -98,8 +99,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
-module.exports = router;
 
 
 router.get("/:id", async (req, res) => {
