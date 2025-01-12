@@ -1,90 +1,90 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Camera, AlignJustify, Bold, Italic, Underline } from 'lucide-react';
-import './WritePage.css';
+import React, { useState, useRef } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Camera, AlignJustify, Bold, Italic, Underline } from "lucide-react";
+import "./WritePage.css";
 
-const WritePage = ({ isMenuOpen, currentUser }) => {
+const WritePage = ({ isMenuOpen }) => {
+  const { userId } = useParams(); // Retrieve userId from URL
+  const navigate = useNavigate(); // Initialize useNavigate
   const [isDraft, setIsDraft] = useState(false);
-  const [content, setContent] = useState('');
-  const [title, setTitle] = useState('');
-  const [image, setImage] = useState(null);
-  const [editorRef, setEditorRef] = useState(null);
-  const [authorName, setAuthorName] = useState(currentUser ? currentUser.name : ''); // State for author name
+  const [content, setContent] = useState(""); // Track content
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState(""); // Store image URL directly
+  const editorRef = useRef(null); // Ref for contentEditable div
 
-  const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "your_preset_name");
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/posts", formData);
-      return response.data.secure_url;
-    } catch (err) {
-      console.error("Error uploading image:", err);
-      return null;
+  const handleImageUpload = () => {
+    const imageUrl = prompt("Enter the image URL:");
+    if (imageUrl && imageUrl.trim()) {
+      setImage(imageUrl.trim());
+    } else {
+      alert("Image URL is required!");
     }
   };
 
-  const applyFormatting = (format) => {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const element = document.createElement(format);
-    element.textContent = selection.toString();
-    range.deleteContents();
-    range.insertNode(element);
-    setContent(editorRef.innerHTML);
-  };
-
-  const handleImageUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const imageUrl = await uploadImage(file);
-        if (imageUrl) {
-          setImage(imageUrl);  // Store the image URL
-        }
-      }
-    };
-    input.click();
+  const applyFormatting = (tag) => {
+    document.execCommand(tag, false, null);
   };
 
   const handleSubmit = async () => {
+    if (!userId) {
+      alert("User ID is missing in the URL.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Authentication token not found. Please log in.");
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:5000/api/posts', {
-        title,
-        content,
-        author: authorName,  // Use the entered or pre-filled author name
-        imageUrl: image || "", // Use image URL or leave it blank
-        isDraft,
-      });
-      console.log('Post created successfully:', response.data);
-      // Optionally, you can redirect the user or show a success message here
+      const response = await axios.post(
+        `http://localhost:5000/api/write/${userId}`,
+        {
+          title,
+          content,
+          imageUrl: image || "",
+          isDraft,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Post created successfully:", response.data);
+      alert("Post published successfully!");
+
+      // Reset fields after publishing
+      setTitle("");
+      setContent("");
+      setImage("");
+      setIsDraft(false);
+
+      // Clear the content editor
+      if (editorRef.current) {
+        editorRef.current.innerHTML = "";
+      }
+
+      // Redirect to homepage after successful publish
+      navigate(`/homepage/${userId}`);
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error("Error creating post:", error.response?.data || error.message);
+      alert("Failed to publish the post. Please try again.");
     }
   };
 
   return (
     <div className="write-page">
-      <div className={`editor ${isMenuOpen ? 'shift-right' : ''}`}>
+      <div className={`editor ${isMenuOpen ? "shift-right" : ""}`}>
         <input
           type="text"
           placeholder="Add your title"
           className="title-input"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-        />
-        
-        {/* Author Name Input */}
-        <input
-          type="text"
-          placeholder="Author Name"
-          className="author-input"
-          value={authorName}
-          onChange={(e) => setAuthorName(e.target.value)} // Allow the user to change the author name
         />
 
         <div className="toolbar">
@@ -95,21 +95,21 @@ const WritePage = ({ isMenuOpen, currentUser }) => {
           <div className="format-buttons">
             <button
               className="format-btn"
-              onClick={() => applyFormatting('strong')}
+              onClick={() => applyFormatting("bold")}
               title="Bold"
             >
               <Bold size={18} />
             </button>
             <button
               className="format-btn"
-              onClick={() => applyFormatting('em')}
+              onClick={() => applyFormatting("italic")}
               title="Italic"
             >
               <Italic size={18} />
             </button>
             <button
               className="format-btn"
-              onClick={() => applyFormatting('u')}
+              onClick={() => applyFormatting("underline")}
               title="Underline"
             >
               <Underline size={18} />
@@ -117,9 +117,11 @@ const WritePage = ({ isMenuOpen, currentUser }) => {
             <button
               className="format-btn"
               onClick={() => {
-                if (editorRef) {
-                  editorRef.style.textAlign =
-                    editorRef.style.textAlign === 'justify' ? 'left' : 'justify';
+                if (editorRef.current) {
+                  editorRef.current.style.textAlign =
+                    editorRef.current.style.textAlign === "justify"
+                      ? "left"
+                      : "justify";
                 }
               }}
               title="Justify"
@@ -130,12 +132,13 @@ const WritePage = ({ isMenuOpen, currentUser }) => {
         </div>
 
         <div
-          ref={(ref) => setEditorRef(ref)}
+          ref={editorRef}
           className="content-editor"
           contentEditable
-          onInput={(e) => setContent(e.target.innerHTML)}
-          dangerouslySetInnerHTML={{ __html: content }}
+          suppressContentEditableWarning
+          onInput={() => setContent(editorRef.current.innerHTML)} // Update state with content
         />
+
         <div className="draft-checkbox">
           <input
             type="checkbox"
@@ -146,8 +149,24 @@ const WritePage = ({ isMenuOpen, currentUser }) => {
           <label htmlFor="draft">Draft</label>
         </div>
         <div className="action-buttons">
-          <button className="publish-btn" onClick={handleSubmit}>Publish</button>
-          <button className="cancel-btn">Cancel</button>
+          <button className="publish-btn" onClick={handleSubmit}>
+            Publish
+          </button>
+          <button
+            className="cancel-btn"
+            onClick={() => {
+              setTitle("");
+              setContent("");
+              setImage("");
+              setIsDraft(false);
+              if (editorRef.current) {
+                editorRef.current.innerHTML = ""; // Clear content editor on cancel
+              }
+              navigate(`/homepage/${userId}`); // Redirect to homepage on cancel
+            }}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

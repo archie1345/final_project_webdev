@@ -16,11 +16,11 @@ function BlogPage() {
       setLoading(false);
       return;
     }
-    console.log(postId)
+    console.log(postId);
     axios
-      .get(`http://localhost:5000/api/posts/${postId}`) // Adjust the URL to match your backend endpoint
+      .get(`http://localhost:5000/api/posts/${postId}`) // Fetch post data from backend
       .then((response) => {
-        setPost(response.data); // Store the data into the state
+        setPost(response.data); // Store the post data
         setLoading(false);
       })
       .catch((err) => {
@@ -28,24 +28,23 @@ function BlogPage() {
         setError("Failed to load the post"); // Generic error message
         setLoading(false);
       });
-  }, [postId]); // Effect runs whenever postId changes
+  }, [postId]);
 
   if (loading) return <p>Loading...</p>; // Display loading message
   if (error) return <p>{error}</p>; // Display error message if any
 
-  // Ensure the post object has data before trying to display it
   return (
     <div className="blog-page">
       <main className="content">
         {post ? (
           <div className="blog-content">
             <img
-              src={post.imageUrl} // Ganti URL ini dengan link gambar nyata
+              src={post.imageUrl || "https://picsum.photos/600/300"} // Use default image if none exists
               alt="Blog Thumbnail"
               className="blog-image"
             />
             <h2>{post.title}</h2>
-            <p>By {post.author || "Unknown Author"}</p>
+            <p>By {post.author?.username || "Unknown Author"}</p> {/* Display username */}
             <div>{post.content}</div>
             <p>
               <small>
@@ -54,7 +53,7 @@ function BlogPage() {
             </p>
           </div>
         ) : (
-          <p>No post data available.</p> // Fallback message if post data is missing
+          <p>No post data available.</p> // Fallback if post data is missing
         )}
       </main>
     </div>

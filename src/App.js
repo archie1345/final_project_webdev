@@ -29,14 +29,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/write"
-          element={
-            <Layout>
-              <WritePage />
-            </Layout>
-          }
-        />
+        <Route path="/write/:userId" element={<Layout><WritePage/></Layout>} />
+
         <Route
           path="/blogpage"
           element={
@@ -46,7 +40,7 @@ function App() {
           }
         />
         <Route
-          path="/homepage"
+          path="/homepage/:userId"
           element={
             <Layout>
               <HomePage />
